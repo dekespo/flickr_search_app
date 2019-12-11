@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProviders;
 public class HomeFragment extends Fragment
 {
 
-    private HomeViewModel homeViewModel;
     private Context mContext;
 
     @Override
@@ -35,25 +34,20 @@ public class HomeFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        HomeViewModel homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        final View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        SearchView search = root.findViewById(R.id.search);
-        search.setActivated(true);
-        search.setQueryHint("Type your keyword here");
-        search.onActionViewExpanded();
-        search.setIconified(false);
 
+        final ArrayAdapter arrayAdapter = generateArrayAdapter();
+        addListView(root, arrayAdapter);
+        addSearchView(root, arrayAdapter);
+
+        return root;
+    }
+
+    private void addListView(final View root, final ArrayAdapter arrayAdapter)
+    {
         final ListView list = root.findViewById(R.id.list);
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("JAVA");
-        arrayList.add("ANDROID");
-        arrayList.add("C Language");
-        arrayList.add("CPP Language");
-        arrayList.add("Go Language");
-        arrayList.add("AVN SYSTEMS");
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, arrayList);
         list.setAdapter(arrayAdapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -64,10 +58,27 @@ public class HomeFragment extends Fragment
                 Toast.makeText(mContext, clickedItem, Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-        final ArrayAdapter<String> finalArrayAdapter = arrayAdapter;
+    private ArrayAdapter<String> generateArrayAdapter()
+    {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("JAVA");
+        arrayList.add("ANDROID");
+        arrayList.add("C Language");
+        arrayList.add("CPP Language");
+        arrayList.add("Go Language");
+        arrayList.add("AVN SYSTEMS");
+        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, arrayList);
+    }
 
-
+    private void addSearchView(final View root, final ArrayAdapter arrayAdapter)
+    {
+        SearchView search = root.findViewById(R.id.search);
+        search.setActivated(true);
+        search.setQueryHint("Type your keyword here");
+        search.onActionViewExpanded();
+        search.setIconified(false);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
             @Override
@@ -79,11 +90,11 @@ public class HomeFragment extends Fragment
             @Override
             public boolean onQueryTextChange(String newText)
             {
-                finalArrayAdapter.getFilter().filter(newText);
+                arrayAdapter.getFilter().filter(newText);
                 return false;
             }
         });
-
-        return root;
     }
+
+
 }
