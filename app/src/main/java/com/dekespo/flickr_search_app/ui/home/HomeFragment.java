@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.dekespo.flickr_search_app.R;
@@ -38,6 +39,12 @@ public class HomeFragment extends Fragment
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+        SearchView search = root.findViewById(R.id.search);
+        search.setActivated(true);
+        search.setQueryHint("Type your keyword here");
+        search.onActionViewExpanded();
+        search.setIconified(false);
+
         final ListView list = root.findViewById(R.id.list);
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("JAVA");
@@ -55,6 +62,25 @@ public class HomeFragment extends Fragment
             {
                 String clickedItem = (String) list.getItemAtPosition(position);
                 Toast.makeText(mContext, clickedItem, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        final ArrayAdapter<String> finalArrayAdapter = arrayAdapter;
+
+
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                finalArrayAdapter.getFilter().filter(newText);
+                return false;
             }
         });
 
