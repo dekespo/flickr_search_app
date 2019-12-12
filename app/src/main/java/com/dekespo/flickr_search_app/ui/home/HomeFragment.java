@@ -45,21 +45,10 @@ public class HomeFragment extends Fragment
         HomeViewModel homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        final ArrayAdapter arrayAdapter = generateArrayAdapter();
-        addListView(root, arrayAdapter);
-        addSearchView(root, arrayAdapter);
 
-        //Creating an object of our api interface
         ApiService api = RetroClient.getApiService();
-
-        /**
-         * Calling JSON
-         */
         Call<EmployeeList> call = api.getMyJSON();
 
-        /**
-         * Enqueue Callback will be call when get response...
-         */
         call.enqueue(new Callback<EmployeeList>()
         {
             @Override
@@ -68,20 +57,17 @@ public class HomeFragment extends Fragment
 
                 if (response.isSuccessful())
                 {
-                    /**
-                     * Got Successfully
-                     */
                     ArrayList<Employee> employeeList = response.body().getEmployee();
-                    for (Employee employee : employeeList)
-                    {
-                        Log.e("DEKE", "Employee name " + employee.getName());
-                    }
+                    final ArrayAdapter arrayAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, employeeList);
+                    addListView(root, arrayAdapter);
+                    addSearchView(root, arrayAdapter);
                 }
             }
 
             @Override
             public void onFailure(Call<EmployeeList> call, Throwable t)
             {
+                Log.e("DEKE", "Failed with " + t.toString());
             }
         });
 
@@ -97,22 +83,11 @@ public class HomeFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                String clickedItem = (String) list.getItemAtPosition(position);
+                Employee employee = (Employee) list.getItemAtPosition(position);
+                String clickedItem = employee.toString();
                 Toast.makeText(mContext, clickedItem, Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private ArrayAdapter<String> generateArrayAdapter()
-    {
-        ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("JAVA");
-        arrayList.add("ANDROID");
-        arrayList.add("C Language");
-        arrayList.add("CPP Language");
-        arrayList.add("Go Language");
-        arrayList.add("AVN SYSTEMS");
-        return new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, arrayList);
     }
 
     private void addSearchView(final View root, final ArrayAdapter arrayAdapter)

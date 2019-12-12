@@ -3,6 +3,8 @@ package com.dekespo.flickr_search_app.helper;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
+
 
 public class Employee
 {
@@ -96,5 +98,12 @@ public class Employee
     public void setSalary(String salary)
     {
         this.salary = salary;
+    }
+
+    @NonNull
+    @Override
+    public String toString()
+    {
+        return getContactNumber() + " " + getDesignation() + " " + getDob() + " " + getEmail() + " " + getName();
     }
 }
