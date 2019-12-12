@@ -13,10 +13,10 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.dekespo.flickr_search_app.R;
-import com.dekespo.flickr_search_app.helper.ApiService;
-import com.dekespo.flickr_search_app.models.Employee;
-import com.dekespo.flickr_search_app.helper.EmployeeList;
-import com.dekespo.flickr_search_app.helper.RetroClient;
+import com.dekespo.flickr_search_app.models.FlickrPhoto;
+import com.dekespo.flickr_search_app.models.FlickrResult;
+import com.dekespo.flickr_search_app.retro.ApiService;
+import com.dekespo.flickr_search_app.retro.RetroClient;
 
 import java.util.ArrayList;
 
@@ -47,32 +47,37 @@ public class HomeFragment extends Fragment
 
 
         ApiService api = RetroClient.getApiService();
-        Call<EmployeeList> call = api.getMyJSON();
+        Call<FlickrResult> call = api.getFlickrResult();
 
-        call.enqueue(new Callback<EmployeeList>()
+        call.enqueue(new Callback<FlickrResult>()
         {
             @Override
-            public void onResponse(Call<EmployeeList> call, Response<EmployeeList> response)
+            public void onResponse(Call<FlickrResult> call, Response<FlickrResult> response)
             {
-
                 if (response.isSuccessful())
                 {
-                    ArrayList<Employee> employeeList = response.body().getEmployee();
-                    final ArrayAdapter arrayAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, employeeList);
+                    ArrayList<FlickrPhoto> flickrPhotoList = response.body().getPhotos().getPhoto();
+                    final ArrayAdapter arrayAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, flickrPhotoList);
                     addListView(root, arrayAdapter);
                     addSearchView(root, arrayAdapter);
+                }
+                else
+                {
+                    Log.e("DEKE", "Failed on response");
                 }
             }
 
             @Override
-            public void onFailure(Call<EmployeeList> call, Throwable t)
+            public void onFailure(Call<FlickrResult> call, Throwable t)
             {
                 Log.e("DEKE", "Failed with " + t.toString());
             }
         });
 
+
         return root;
     }
+
 
     private void addListView(final View root, final ArrayAdapter arrayAdapter)
     {
@@ -83,8 +88,9 @@ public class HomeFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                Employee employee = (Employee) list.getItemAtPosition(position);
-                String clickedItem = employee.toString();
+                // TODO: Make this generic or something else
+                FlickrPhoto flickrPhoto = (FlickrPhoto) list.getItemAtPosition(position);
+                String clickedItem = flickrPhoto.toString();
                 Toast.makeText(mContext, clickedItem, Toast.LENGTH_SHORT).show();
             }
         });
@@ -113,6 +119,4 @@ public class HomeFragment extends Fragment
             }
         });
     }
-
-
 }

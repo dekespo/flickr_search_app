@@ -1,4 +1,4 @@
-package com.dekespo.flickr_search_app.helper;
+package com.dekespo.flickr_search_app.retro;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -7,8 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetroClient
 {
 
-    //    private static final String ROOT_URL = "https://api.flickr.com/services/rest/";
-    private static final String ROOT_URL = "http://api.androiddeft.com/";
+    private static final String ROOT_URL = "https://api.flickr.com/services/rest/";
 
     private static Retrofit getRetrofitInstance()
     {
