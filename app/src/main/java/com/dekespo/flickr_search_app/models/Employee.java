@@ -1,4 +1,4 @@
-package com.dekespo.flickr_search_app.helper;
+package com.dekespo.flickr_search_app.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

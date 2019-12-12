@@ -1,5 +1,6 @@
 package com.dekespo.flickr_search_app.helper;
 
+import com.dekespo.flickr_search_app.models.Employee;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

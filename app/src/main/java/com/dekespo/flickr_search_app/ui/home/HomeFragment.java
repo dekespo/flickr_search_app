@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.dekespo.flickr_search_app.R;
 import com.dekespo.flickr_search_app.helper.ApiService;
-import com.dekespo.flickr_search_app.helper.Employee;
+import com.dekespo.flickr_search_app.models.Employee;
 import com.dekespo.flickr_search_app.helper.EmployeeList;
 import com.dekespo.flickr_search_app.helper.RetroClient;
 
