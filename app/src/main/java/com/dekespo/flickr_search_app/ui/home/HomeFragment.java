@@ -16,7 +16,7 @@ import com.dekespo.flickr_search_app.R;
 import com.dekespo.flickr_search_app.models.FlickrPhoto;
 import com.dekespo.flickr_search_app.models.FlickrResult;
 import com.dekespo.flickr_search_app.retro.ApiService;
-import com.dekespo.flickr_search_app.retro.RetroClient;
+import com.dekespo.flickr_search_app.retro.FlickrClient;
 
 import java.util.ArrayList;
 
@@ -46,8 +46,14 @@ public class HomeFragment extends Fragment
         final View root = inflater.inflate(R.layout.fragment_home, container, false);
 
 
-        ApiService api = RetroClient.getApiService();
-        Call<FlickrResult> call = api.getFlickrResult();
+        ApiService api = FlickrClient.getApiService();
+        Call<FlickrResult> call = api.getFlickrResult(
+                FlickrClient.METHOD,
+                FlickrClient.API_KEY,
+                FlickrClient.FORMAT,
+                FlickrClient.NO_JSON_CALLBACK,
+                "cats"
+        );
 
         call.enqueue(new Callback<FlickrResult>()
         {
