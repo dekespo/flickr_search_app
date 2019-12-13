@@ -51,6 +51,21 @@ public class SearchFragment extends Fragment
         mFlickrSearchView.setQueryHint("Keyword for flickr");
         mFlickrSearchView.onActionViewExpanded();
         mFlickrSearchView.setIconified(false);
+        mFlickrSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
+        {
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                getPhotosWithCall();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                return false;
+            }
+        });
 
         mFlickrSearchButton = root.findViewById(R.id.search_button);
 
@@ -70,40 +85,46 @@ public class SearchFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                String searchText = mFlickrSearchView.getQuery().toString();
-                if (searchText.isEmpty())
-                    return;
+                getPhotosWithCall();
+            }
+        });
+    }
 
-                Call<FlickrResult> call = mFlickerApi.getPhotosSearchResult(
-                        FlickrClient.METHOD,
-                        FlickrClient.API_KEY,
-                        FlickrClient.FORMAT,
-                        FlickrClient.NO_JSON_CALLBACK,
-                        searchText
-                );
-                call.enqueue(new Callback<FlickrResult>()
+    private void getPhotosWithCall()
+    {
+        String searchText = mFlickrSearchView.getQuery().toString();
+        mFlickrSearchView.clearFocus();
+        if (searchText.isEmpty())
+            return;
+
+        Call<FlickrResult> call = mFlickerApi.getPhotosSearchResult(
+                FlickrClient.METHOD,
+                FlickrClient.API_KEY,
+                FlickrClient.FORMAT,
+                FlickrClient.NO_JSON_CALLBACK,
+                searchText
+        );
+        call.enqueue(new Callback<FlickrResult>()
+        {
+            @Override
+            public void onResponse(Call<FlickrResult> call, Response<FlickrResult> response)
+            {
+                if (response.isSuccessful())
                 {
-                    @Override
-                    public void onResponse(Call<FlickrResult> call, Response<FlickrResult> response)
-                    {
-                        if (response.isSuccessful())
-                        {
-                            ArrayList<FlickrPhoto> flickrPhotoList = response.body().getPhotos().getPhoto();
-                            final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mContext, flickrPhotoList);
-                            mFlickrPhotoListView.setAdapter(photoAdapter);
-                        }
-                        else
-                        {
-                            Log.e("DEKE", "Failed on response");
-                        }
-                    }
+                    ArrayList<FlickrPhoto> flickrPhotoList = response.body().getPhotos().getPhoto();
+                    final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mContext, flickrPhotoList);
+                    mFlickrPhotoListView.setAdapter(photoAdapter);
+                }
+                else
+                {
+                    Log.e("DEKE", "Failed on response");
+                }
+            }
 
-                    @Override
-                    public void onFailure(Call<FlickrResult> call, Throwable t)
-                    {
-                        Log.e("DEKE", "Failed with " + t.toString());
-                    }
-                });
+            @Override
+            public void onFailure(Call<FlickrResult> call, Throwable t)
+            {
+                Log.e("DEKE", "Failed with " + t.toString());
             }
         });
     }
