@@ -6,11 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import com.dekespo.flickr_search_app.helper.FlickrPhotoAdapter;
 import com.dekespo.flickr_search_app.models.FlickrPhoto;
 import com.dekespo.flickr_search_app.models.FlickrResult;
 import com.dekespo.flickr_search_app.retro.FlickerApi;
@@ -89,8 +89,8 @@ public class SearchFragment extends Fragment
                         if (response.isSuccessful())
                         {
                             ArrayList<FlickrPhoto> flickrPhotoList = response.body().getPhotos().getPhoto();
-                            final ArrayAdapter arrayAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, flickrPhotoList);
-                            mFlickrPhotoListView.setAdapter(arrayAdapter);
+                            final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mContext, flickrPhotoList);
+                            mFlickrPhotoListView.setAdapter(photoAdapter);
                         }
                         else
                         {
