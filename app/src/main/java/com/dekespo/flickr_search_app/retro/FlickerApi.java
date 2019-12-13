@@ -6,10 +6,10 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface ApiService
+public interface FlickerApi
 {
     @GET(".")
-    Call<FlickrResult> getFlickrResult(
+    Call<FlickrResult> getPhotosSearchResult(
             @Query("method") String method,
             @Query("api_key") String apiKey,
             @Query("format") String format,
@@ -17,5 +17,6 @@ public interface ApiService
             @Query("text") String text
     );
 
+    // TODO for search use small pictures?
 }
 

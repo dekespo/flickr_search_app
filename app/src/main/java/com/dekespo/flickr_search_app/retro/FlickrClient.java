@@ -21,9 +21,9 @@ public class FlickrClient
                 .build();
     }
 
-    public static ApiService getApiService()
+    public static FlickerApi getApiService()
     {
-        return getRetrofitInstance().create(ApiService.class);
+        return getRetrofitInstance().create(FlickerApi.class);
     }
 }
 
