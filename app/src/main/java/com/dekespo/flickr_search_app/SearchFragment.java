@@ -65,19 +65,22 @@ public class SearchFragment extends Fragment
     public void onStart()
     {
         super.onStart();
-        final Call<FlickrResult> call = mFlickerApi.getPhotosSearchResult(
-                FlickrClient.METHOD,
-                FlickrClient.API_KEY,
-                FlickrClient.FORMAT,
-                FlickrClient.NO_JSON_CALLBACK,
-                "cats"
-        );
-
         mFlickrSearchButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                String searchText = mFlickrSearchView.getQuery().toString();
+                if (searchText.isEmpty())
+                    return;
+
+                Call<FlickrResult> call = mFlickerApi.getPhotosSearchResult(
+                        FlickrClient.METHOD,
+                        FlickrClient.API_KEY,
+                        FlickrClient.FORMAT,
+                        FlickrClient.NO_JSON_CALLBACK,
+                        searchText
+                );
                 call.enqueue(new Callback<FlickrResult>()
                 {
                     @Override
