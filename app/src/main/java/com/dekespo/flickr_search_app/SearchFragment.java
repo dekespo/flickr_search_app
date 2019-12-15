@@ -7,16 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.CompoundButton;
+import android.widget.GridView;
 import android.widget.SearchView;
 
 import com.dekespo.flickr_search_app.helper.FlickrPhotoAdapter;
-import com.dekespo.flickr_search_app.models.FlickrPhoto;
 import com.dekespo.flickr_search_app.models.FlickrResult;
 import com.dekespo.flickr_search_app.retro.FlickerApi;
 import com.dekespo.flickr_search_app.retro.FlickrClient;
-
-import java.util.ArrayList;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
+import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -34,11 +36,13 @@ public class SearchFragment extends Fragment
 {
     private static final String TAG = "SearchFragment";
 
-    private Context mContext;
+    private static final String METHOD = "flickr.photos.search";
+
     private FlickerApi mFlickerApi;
     private Button mFlickrSearchButton;
     private SearchView mFlickrSearchView;
-    private ListView mFlickrPhotoListView;
+    private GridView mFlickrPhotoGridView;
+    private MainActivity mMainAcitivity;
 
     @NonNull
     private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
@@ -47,13 +51,47 @@ public class SearchFragment extends Fragment
     public void onAttach(@NonNull Context context)
     {
         super.onAttach(context);
-        mContext = context;
+        if (context instanceof MainActivity)
+        {
+            mMainAcitivity = (MainActivity) context;
+        }
+        else
+        {
+            Log.e(TAG, "Cannot set the activity!");
+        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
         final View root = inflater.inflate(R.layout.fragment_search, container, false);
+
+        mFlickrPhotoGridView = root.findViewById(R.id.gridView);
+
+
+        SwitchDrawerItem layoutToggleDrawerItem = new SwitchDrawerItem()
+                .withName("Layout: Grid or List")
+                .withOnCheckedChangeListener(new OnCheckedChangeListener()
+                {
+                    @Override
+                    public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked)
+                    {
+                        int gridColumnNo = 1;
+                        if (isChecked)
+                            gridColumnNo = 2;
+                        mFlickrPhotoGridView.setNumColumns(gridColumnNo);
+                    }
+                });
+
+
+        DrawerBuilder drawerBuilder = new DrawerBuilder();
+        drawerBuilder
+                .withActivity(mMainAcitivity)
+                .addDrawerItems(
+                        layoutToggleDrawerItem
+                )
+                .build();
+
 
         mFlickrSearchView = root.findViewById(R.id.search_view);
         mFlickrSearchView.setActivated(true);
@@ -77,8 +115,6 @@ public class SearchFragment extends Fragment
         });
 
         mFlickrSearchButton = root.findViewById(R.id.search_button);
-
-        mFlickrPhotoListView = root.findViewById(R.id.list);
 
         mFlickerApi = FlickrClient.getApiService();
 
@@ -122,7 +158,7 @@ public class SearchFragment extends Fragment
     private void callAndLoadPhotos(String searchText)
     {
         Call<FlickrResult> call = mFlickerApi.getPhotosSearchResult(
-                FlickrClient.METHOD,
+                METHOD,
                 FlickrClient.API_KEY,
                 FlickrClient.FORMAT,
                 FlickrClient.NO_JSON_CALLBACK,
@@ -135,7 +171,14 @@ public class SearchFragment extends Fragment
             {
                 if (response.isSuccessful())
                 {
-                    loadImageWithGlide(response.body().getPhotos().getPhoto());
+                    if (response.body() != null)
+                    {
+                        loadImageWithGlide(response.body());
+                    }
+                    else
+                    {
+                        Log.e(TAG, "Response body is empty");
+                    }
                 }
                 else
                 {
@@ -154,7 +197,7 @@ public class SearchFragment extends Fragment
     private void observeAndLoadPhotos(String searchText)
     {
         Single<FlickrResult> resultObservable = mFlickerApi.getPhotosSearchResultRxJava(
-                FlickrClient.METHOD,
+                METHOD,
                 FlickrClient.API_KEY,
                 FlickrClient.FORMAT,
                 FlickrClient.NO_JSON_CALLBACK,
@@ -167,15 +210,13 @@ public class SearchFragment extends Fragment
                     @Override
                     public void onSubscribe(Disposable d)
                     {
-                        Log.d(TAG, "Subscribing now");
                         mCompositeDisposable.add(d);
                     }
 
                     @Override
                     public void onSuccess(FlickrResult flickrResult)
                     {
-                        Log.d(TAG, "On success");
-                        loadImageWithGlide(flickrResult.getPhotos().getPhoto());
+                        loadImageWithGlide(flickrResult);
                     }
 
                     @Override
@@ -186,9 +227,9 @@ public class SearchFragment extends Fragment
                 });
     }
 
-    private void loadImageWithGlide(ArrayList<FlickrPhoto> flickrPhotoList)
+    private void loadImageWithGlide(FlickrResult flickrResult)
     {
-        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mContext, flickrPhotoList);
-        mFlickrPhotoListView.setAdapter(photoAdapter);
+        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrResult.getPhotos().getPhoto());
+        mFlickrPhotoGridView.setAdapter(photoAdapter);
     }
 }

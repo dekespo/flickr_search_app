@@ -8,7 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FlickrClient
 {
 
-    public static final String METHOD = "flickr.photos.search";
     public static final String API_KEY = "1f7c428f03f28f460843946c1174ad46";
     public static final String FORMAT = "json";
     public static final boolean NO_JSON_CALLBACK = true;

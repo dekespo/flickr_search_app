@@ -1,5 +1,6 @@
 package com.dekespo.flickr_search_app.helper;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,27 +29,27 @@ public class FlickrPhotoAdapter extends ArrayAdapter<FlickrPhoto>
     public View getView(int position, View recycled, @NonNull ViewGroup container)
     {
         LinearLayout itemView;
-        final ImageView myImageView;
+        final ImageView imageView;
         if (recycled == null)
         {
             LayoutInflater inflator = LayoutInflater.from(getContext());
             itemView = (LinearLayout) inflator.inflate(R.layout.photo_item, container, false);
-            myImageView = itemView.findViewById(R.id.photo_place);
+            imageView = itemView.findViewById(R.id.photo_place);
         }
         else
         {
-            myImageView = (ImageView) recycled;
+            imageView = (ImageView) recycled;
         }
 
         FlickrPhoto photo = getItem(position);
-        String url = String.format("http://farm%d.staticflickr.com/%s/%s_%s.jpg", photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret());
+        @SuppressLint("DefaultLocale") String url = String.format("http://farm%d.staticflickr.com/%s/%s_%s.jpg", photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret());
 
         Glide.with(getContext())
                 .load(url)
                 .centerCrop()
                 .placeholder(R.drawable.ic_menu_camera)
-                .into(myImageView);
+                .into(imageView);
 
-        return myImageView;
+        return imageView;
     }
 }

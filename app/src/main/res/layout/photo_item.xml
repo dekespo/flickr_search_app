@@ -7,9 +7,10 @@
 
     <ImageView
         android:id="@+id/photo_place"
-        android:layout_width="376dp"
-        android:layout_height="325dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/title_activity_photos"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitXY" />
 
 </LinearLayout>
