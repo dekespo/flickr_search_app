@@ -1,6 +1,7 @@
 package com.dekespo.flickr_search_app.retro;
 
-import com.dekespo.flickr_search_app.models.FlickrResult;
+import com.dekespo.flickr_search_app.models.FlickrCommentResult;
+import com.dekespo.flickr_search_app.models.FlickrPhotoResult;
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -10,7 +11,7 @@ import retrofit2.http.Query;
 public interface FlickerApi
 {
     @GET(".")
-    Call<FlickrResult> getPhotosSearchResult(
+    Call<FlickrPhotoResult> getPhotosSearchResult(
             @Query("method") String method,
             @Query("api_key") String apiKey,
             @Query("format") String format,
@@ -20,7 +21,7 @@ public interface FlickerApi
 
     // TODO: Some settings do not work properly or images are too new
     @GET(".")
-    Single<FlickrResult> getPhotosSearchResultRxJava(
+    Single<FlickrPhotoResult> getPhotosSearchResultRxJava(
             @Query("method") String method,
             @Query("api_key") String apiKey,
             @Query("text") String text,
@@ -33,6 +34,14 @@ public interface FlickerApi
             @Query("nojsoncallback") boolean noJsonCallback
     );
 
-    // TODO for search use small pictures?
+    @GET(".")
+    Single<FlickrCommentResult> getPhotoComments(
+            @Query("method") String method,
+            @Query("api_key") String apiKey,
+            @Query("photo_id") String photoId,
+            @Query("format") String format,
+            @Query("nojsoncallback") boolean noJsonCallback
+    );
+
 }
 

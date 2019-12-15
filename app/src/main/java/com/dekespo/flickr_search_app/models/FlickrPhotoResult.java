@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import androidx.annotation.NonNull;
 
-public class FlickrResult
+public class FlickrPhotoResult
 {
     @SerializedName("photos")
     @Expose

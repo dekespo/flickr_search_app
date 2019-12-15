@@ -12,7 +12,7 @@ import android.widget.GridView;
 import android.widget.SearchView;
 
 import com.dekespo.flickr_search_app.helper.FlickrPhotoAdapter;
-import com.dekespo.flickr_search_app.models.FlickrResult;
+import com.dekespo.flickr_search_app.models.FlickrPhotoResult;
 import com.dekespo.flickr_search_app.retro.FlickerApi;
 import com.dekespo.flickr_search_app.retro.FlickrClient;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -206,17 +206,18 @@ public class SearchFragment extends Fragment
 
     private void callAndLoadPhotos(String searchText)
     {
-        Call<FlickrResult> call = mFlickerApi.getPhotosSearchResult(
+        Call<FlickrPhotoResult> call = mFlickerApi.getPhotosSearchResult(
                 METHOD,
                 FlickrClient.API_KEY,
                 FlickrClient.FORMAT,
                 FlickrClient.NO_JSON_CALLBACK,
                 searchText
         );
-        call.enqueue(new Callback<FlickrResult>()
+        Log.d(TAG, "url" + call.request().url());
+        call.enqueue(new Callback<FlickrPhotoResult>()
         {
             @Override
-            public void onResponse(@NonNull Call<FlickrResult> call, @NonNull Response<FlickrResult> response)
+            public void onResponse(@NonNull Call<FlickrPhotoResult> call, @NonNull Response<FlickrPhotoResult> response)
             {
                 if (response.isSuccessful())
                 {
@@ -236,7 +237,7 @@ public class SearchFragment extends Fragment
             }
 
             @Override
-            public void onFailure(@NonNull Call<FlickrResult> call, Throwable t)
+            public void onFailure(@NonNull Call<FlickrPhotoResult> call, Throwable t)
             {
                 Log.e(TAG, "Failed with " + t.toString());
             }
@@ -245,7 +246,7 @@ public class SearchFragment extends Fragment
 
     private void observeAndLoadPhotos(String searchText)
     {
-        Single<FlickrResult> resultObservable = mFlickerApi.getPhotosSearchResultRxJava(
+        Single<FlickrPhotoResult> resultObservable = mFlickerApi.getPhotosSearchResultRxJava(
                 METHOD,
                 FlickrClient.API_KEY,
                 searchText,
@@ -259,7 +260,7 @@ public class SearchFragment extends Fragment
         resultObservable.subscribeOn(Schedulers.io()) // “work” on io thread
                 .observeOn(AndroidSchedulers.mainThread()) // “listen” on UIThread
                 .cache()
-                .subscribe(new SingleObserver<FlickrResult>()
+                .subscribe(new SingleObserver<FlickrPhotoResult>()
                 {
                     @Override
                     public void onSubscribe(Disposable d)
@@ -268,9 +269,9 @@ public class SearchFragment extends Fragment
                     }
 
                     @Override
-                    public void onSuccess(FlickrResult flickrResult)
+                    public void onSuccess(FlickrPhotoResult flickrPhotoResult)
                     {
-                        loadImageWithGlide(flickrResult);
+                        loadImageWithGlide(flickrPhotoResult);
                     }
 
                     @Override
@@ -281,9 +282,9 @@ public class SearchFragment extends Fragment
                 });
     }
 
-    private void loadImageWithGlide(FlickrResult flickrResult)
+    private void loadImageWithGlide(FlickrPhotoResult flickrPhotoResult)
     {
-        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrResult.getPhotos().getPhoto(), getFragmentManager().beginTransaction());
+        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrPhotoResult.getPhotos().getPhoto(), getFragmentManager().beginTransaction());
         mFlickrPhotoGridView.setAdapter(photoAdapter);
     }
 
