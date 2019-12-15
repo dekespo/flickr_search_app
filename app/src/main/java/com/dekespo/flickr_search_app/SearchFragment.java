@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -54,7 +53,6 @@ public class SearchFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
-        SearchViewModel searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         final View root = inflater.inflate(R.layout.fragment_search, container, false);
 
         mFlickrSearchView = root.findViewById(R.id.search_view);
