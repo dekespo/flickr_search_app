@@ -28,9 +28,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SearchFragment extends Fragment
 {
@@ -199,49 +196,8 @@ public class SearchFragment extends Fragment
         if (searchText.isEmpty())
             return;
 
-//        callAndLoadPhotos(searchText);
         observeAndLoadPhotos(searchText);
 
-    }
-
-    private void callAndLoadPhotos(String searchText)
-    {
-        Call<FlickrPhotoResult> call = mFlickerApi.getPhotosSearchResult(
-                METHOD,
-                FlickrClient.API_KEY,
-                FlickrClient.FORMAT,
-                FlickrClient.NO_JSON_CALLBACK,
-                searchText
-        );
-        Log.d(TAG, "url" + call.request().url());
-        call.enqueue(new Callback<FlickrPhotoResult>()
-        {
-            @Override
-            public void onResponse(@NonNull Call<FlickrPhotoResult> call, @NonNull Response<FlickrPhotoResult> response)
-            {
-                if (response.isSuccessful())
-                {
-                    if (response.body() != null)
-                    {
-                        loadImageWithGlide(response.body());
-                    }
-                    else
-                    {
-                        Log.e(TAG, "Response body is empty");
-                    }
-                }
-                else
-                {
-                    Log.e(TAG, "Failed on response");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<FlickrPhotoResult> call, Throwable t)
-            {
-                Log.e(TAG, "Failed with " + t.toString());
-            }
-        });
     }
 
     private void observeAndLoadPhotos(String searchText)
@@ -284,7 +240,7 @@ public class SearchFragment extends Fragment
 
     private void loadImageWithGlide(FlickrPhotoResult flickrPhotoResult)
     {
-        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrPhotoResult.getPhotos().getPhoto(), getFragmentManager().beginTransaction());
+        FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrPhotoResult.getPhotos().getPhoto(), getFragmentManager().beginTransaction());
         mFlickrPhotoGridView.setAdapter(photoAdapter);
     }
 
