@@ -283,7 +283,8 @@ public class SearchFragment extends Fragment
 
     private void loadImageWithGlide(FlickrResult flickrResult)
     {
-        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrResult.getPhotos().getPhoto());
+        final FlickrPhotoAdapter photoAdapter = new FlickrPhotoAdapter(mMainAcitivity, flickrResult.getPhotos().getPhoto(), getFragmentManager().beginTransaction());
         mFlickrPhotoGridView.setAdapter(photoAdapter);
     }
+
 }

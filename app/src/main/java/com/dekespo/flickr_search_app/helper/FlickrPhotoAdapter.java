@@ -1,7 +1,7 @@
 package com.dekespo.flickr_search_app.helper;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +10,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.dekespo.flickr_search_app.DetailFragment;
 import com.dekespo.flickr_search_app.R;
 import com.dekespo.flickr_search_app.models.FlickrPhoto;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 
 public class FlickrPhotoAdapter extends ArrayAdapter<FlickrPhoto>
 {
-    public FlickrPhotoAdapter(Context context, ArrayList<FlickrPhoto> photoList)
+    private FragmentTransaction mTransaction;
+
+    public FlickrPhotoAdapter(Context context, ArrayList<FlickrPhoto> photoList, FragmentTransaction transaction)
     {
         super(context, android.R.layout.simple_list_item_1, photoList);
+        mTransaction = transaction;
     }
 
     @NonNull
@@ -42,13 +47,29 @@ public class FlickrPhotoAdapter extends ArrayAdapter<FlickrPhoto>
         }
 
         FlickrPhoto photo = getItem(position);
-        @SuppressLint("DefaultLocale") String url = String.format("http://farm%d.staticflickr.com/%s/%s_%s.jpg", photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret());
 
         Glide.with(getContext())
-                .load(url)
+                .load(photo.getUrl())
                 .centerCrop()
                 .placeholder(R.drawable.ic_menu_camera)
                 .into(imageView);
+
+        final FlickrPhoto finalPhoto = photo;
+
+        imageView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(FlickrPhoto.FLICKR_PHOTO_KEY, finalPhoto);
+                DetailFragment detailFragment = new DetailFragment();
+                detailFragment.setArguments(bundle);
+                mTransaction.replace(R.id.nav_host_fragment, detailFragment);
+                mTransaction.addToBackStack(null);
+                mTransaction.commit();
+            }
+        });
 
         return imageView;
     }

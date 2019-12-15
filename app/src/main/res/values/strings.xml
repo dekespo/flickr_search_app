@@ -10,4 +10,5 @@
     <string name="menu_home">Home</string>
     <string name="button_search">Show me!</string>
     <string name="title_activity_photos">Flickr Photos</string>
+    <string name="fragmentdeatil">fragmentDeatil</string>
 </resources>

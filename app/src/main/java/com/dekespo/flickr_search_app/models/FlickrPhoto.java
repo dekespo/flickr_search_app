@@ -3,11 +3,15 @@ package com.dekespo.flickr_search_app.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import androidx.annotation.NonNull;
 
 
-public class FlickrPhoto
+public class FlickrPhoto implements Serializable
 {
+    public static final String FLICKR_PHOTO_KEY = "FlickrPhoto";
+
     @SerializedName("id")
     @Expose
     private String id;
@@ -124,6 +128,11 @@ public class FlickrPhoto
     public void setIsfamily(long isfamily)
     {
         this.isfamily = isfamily;
+    }
+
+    public String getUrl()
+    {
+        return String.format("http://farm%d.staticflickr.com/%s/%s_%s.jpg", this.getFarm(), this.getServer(), this.getId(), this.getSecret());
     }
 
     @NonNull
