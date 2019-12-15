@@ -54,11 +54,4 @@ dependencies {
 
     // Permission utility
     implementation 'com.anthonycr.grant:permissions:1.1.2'
-
-    // Java Unit Test
-    testImplementation 'junit:junit:4.12'
-
-    // Android Unit test with a device
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
