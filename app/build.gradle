@@ -30,6 +30,9 @@ dependencies {
 
     // Android UI Library
     implementation 'com.google.android.material:material:1.0.0'
+    implementation "com.mikepenz:materialdrawer:6.1.2"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.annotation:annotation:1.1.0"
 
     // REST API format type GSON (could be JSON and othe REST)
     implementation 'com.google.code.gson:gson:2.8.5'
