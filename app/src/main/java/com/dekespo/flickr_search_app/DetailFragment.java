@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dekespo.flickr_search_app.helper.FlickrCommentAdapter;
@@ -94,6 +95,7 @@ public class DetailFragment extends Fragment
                     public void onError(Throwable e)
                     {
                         Log.e(TAG, "Error in observer " + e);
+                        Toast.makeText(mContext, "Error in getting images, please check your internet connection", Toast.LENGTH_LONG).show();
                     }
                 });
 

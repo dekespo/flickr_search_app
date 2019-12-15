@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.dekespo.flickr_search_app.DetailFragment;
@@ -26,6 +27,8 @@ public class FlickrPhotoAdapter extends ArrayAdapter<FlickrPhoto>
     public FlickrPhotoAdapter(Context context, ArrayList<FlickrPhoto> photoList, FragmentTransaction transaction)
     {
         super(context, android.R.layout.simple_list_item_1, photoList);
+        if (photoList.size() == 0)
+            Toast.makeText(context, "No Image is found!", Toast.LENGTH_LONG).show();
         mTransaction = transaction;
     }
 

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.dekespo.flickr_search_app.helper.FlickrPhotoAdapter;
 import com.dekespo.flickr_search_app.models.FlickrPhotoResult;
@@ -233,7 +234,8 @@ public class SearchFragment extends Fragment
                     @Override
                     public void onError(Throwable e)
                     {
-                        Log.e(TAG, "Error in observer");
+                        Log.e(TAG, "Error in observer" + e);
+                        Toast.makeText(mMainAcitivity, "Error in getting images, please check your internet connection", Toast.LENGTH_LONG).show();
                     }
                 });
     }
