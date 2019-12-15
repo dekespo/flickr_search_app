@@ -37,6 +37,31 @@ public class SearchFragment extends Fragment
     private static final String TAG = "SearchFragment";
 
     private static final String METHOD = "flickr.photos.search";
+    /*
+    1 public photos
+    2 private photos visible to friends
+    3 private photos visible to family
+    4 private photos visible to friends & family
+    5 completely private photos
+     */
+    private static final int PRIVACY_FILTER = 1;
+    /*
+    1 for safe.
+    2 for moderate.
+    3 for restricted.
+     */
+    private static final int SAFE_SEARCH = 1;
+    // Possible values are all (default), photos or videos
+    private static final String MEDIA = "photos";
+
+    private int mContentType;
+    private boolean mIsGallery;
+
+    // Other
+    //    per_page (Optional)
+    //    Number of photos to return per page. If this argument is omitted, it defaults to 100. The maximum allowed value is 500.
+    //    page (Optional)
+    //    The page of results to return. If this argument is omitted, it defaults to 1
 
     private FlickerApi mFlickerApi;
     private Button mFlickrSearchButton;
@@ -82,13 +107,37 @@ public class SearchFragment extends Fragment
                         mFlickrPhotoGridView.setNumColumns(gridColumnNo);
                     }
                 });
+        SwitchDrawerItem contentTypeSwitch = new SwitchDrawerItem()
+                .withName("Content Type: Photos or Screenshots")
+                .withOnCheckedChangeListener(new OnCheckedChangeListener()
+                {
+                    @Override
+                    public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked)
+                    {
+                        mContentType = 1;
+                        if (isChecked)
+                            mContentType = 2;
+                    }
+                });
+        SwitchDrawerItem isGallerySwitch = new SwitchDrawerItem()
+                .withName("Gallery")
+                .withOnCheckedChangeListener(new OnCheckedChangeListener()
+                {
+                    @Override
+                    public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked)
+                    {
+                        mIsGallery = isChecked;
+                    }
+                });
 
 
         DrawerBuilder drawerBuilder = new DrawerBuilder();
         drawerBuilder
                 .withActivity(mMainAcitivity)
                 .addDrawerItems(
-                        layoutToggleDrawerItem
+                        layoutToggleDrawerItem,
+                        contentTypeSwitch,
+                        isGallerySwitch
                 )
                 .build();
 
@@ -199,9 +248,14 @@ public class SearchFragment extends Fragment
         Single<FlickrResult> resultObservable = mFlickerApi.getPhotosSearchResultRxJava(
                 METHOD,
                 FlickrClient.API_KEY,
+                searchText,
+                PRIVACY_FILTER,
+                SAFE_SEARCH,
+                mContentType,
+                MEDIA,
+                mIsGallery,
                 FlickrClient.FORMAT,
-                FlickrClient.NO_JSON_CALLBACK,
-                searchText);
+                FlickrClient.NO_JSON_CALLBACK);
         resultObservable.subscribeOn(Schedulers.io()) // “work” on io thread
                 .observeOn(AndroidSchedulers.mainThread()) // “listen” on UIThread
                 .cache()
