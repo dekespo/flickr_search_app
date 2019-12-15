@@ -52,6 +52,9 @@ dependencies {
     // Retfofit + RxJava
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
 
+    // Permission utility
+    implementation 'com.anthonycr.grant:permissions:1.1.2'
+
     // Java Unit Test
     testImplementation 'junit:junit:4.12'
 
